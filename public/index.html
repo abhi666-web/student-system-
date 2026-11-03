@@ -3,26 +3,50 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Student Management System</title>
+<title>Student Attendance Portal</title>
 <style>
-:root{--bg:#f5f6fa;--card:#fff;--tx:#1d2433;--mu:#6b7385;--ac:#3b5bdb;--bd:#e1e4ec;--ok:#2f9e44;--bad:#e03131;color-scheme:light}
-@media(prefers-color-scheme:dark){:root{--bg:#12151c;--card:#1b2030;--tx:#e8eaf0;--mu:#98a1b5;--ac:#7c93ff;--bd:#2c3348;--ok:#51cf66;--bad:#ff6b6b;color-scheme:dark}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,sans-serif}
-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--card);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5}
-h1{font-size:18px;margin:0}main{max-width:900px;margin:0 auto;padding:16px}
-nav{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px}
-button,select,input{font:inherit;color:var(--tx)}
-button{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:8px 14px;cursor:pointer}
-button.g{background:transparent;color:var(--tx);border:1px solid var(--bd)}button.on{background:var(--ac);color:#fff}button.d{background:var(--bad);color:#fff}
-input,select{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px 10px;width:100%}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
-.stat{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}.stat b{display:block;font-size:24px}.stat span,.mu{color:var(--mu);font-size:13px}
+:root{--bg:#f0f2f5;--card:#ffffff;--tx:#1e293b;--mu:#64748b;--ac:#0284c7;--bd:#e2e8f0;--ok:#16a34a;--bad:#dc2626}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.5 system-ui,-apple-system,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:#1e3a8a;color:#fff;position:sticky;top:0;z-index:10}
+header h1{font-size:16px;margin:0;font-weight:600}
+main{max-width:960px;margin:0 auto;padding:12px}
+nav{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px}
+button,select,input{font:inherit}
+button{background:var(--ac);color:#fff;border:0;border-radius:6px;padding:7px 12px;cursor:pointer;font-weight:500}
+button.g{background:#fff;color:var(--tx);border:1px solid var(--bd)}button.on{background:var(--ac);color:#fff}button.d{background:var(--bad);color:#fff}
+input,select{background:#fff;border:1px solid var(--bd);border-radius:6px;padding:7px 10px;width:100%}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+.stu-bar{background:#fff;border:1px solid var(--bd);border-radius:8px;padding:12px;margin-bottom:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;font-size:12px}
+.stu-bar b{color:#1e3a8a;display:block;font-size:13px}
+.erp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.erp-card{background:#f8fafc;border:1px solid #cbd5e1;border-radius:10px;padding:12px;cursor:pointer;transition:transform 0.1s}
+.erp-card:active{transform:scale(0.98)}
+.erp-top{font-size:11px;color:var(--mu);margin-bottom:8px;font-weight:600}
+.erp-body{display:flex;align-items:center;gap:12px}
+.circle-meter{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;font-weight:700;font-size:12px}
+.circle-meter::after{content:'';position:absolute;width:48px;height:48px;background:#f8fafc;border-radius:50%}
+.circle-meter span{position:relative;z-index:2}
+.erp-info{flex:1;min-width:0}
+.erp-sub{font-weight:700;font-size:14px;line-height:1.3;color:#0f172a;margin-bottom:6px}
+.badge{display:inline-block;background:#e2e8f0;color:#334155;border-radius:12px;padding:2px 8px;font-size:11px;font-weight:600}
+.erp-foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:8px;border-top:1px dashed #cbd5e1;font-size:12px;font-weight:600;color:var(--mu)}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:100;padding:12px}
+.modal{background:#fff;border-radius:10px;width:100%;max-width:550px;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 10px 25px rgba(0,0,0,0.2);overflow:hidden}
+.modal-head{background:#0284c7;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+.modal-head h2{margin:0;font-size:15px;font-weight:600}
+.modal-body{padding:14px;overflow-y:auto;flex:1}
+.filter-row{display:flex;gap:6px;margin:8px 0 12px}
+.pill{padding:4px 12px;border-radius:16px;font-size:12px;border:1px solid var(--bd);background:#fff;cursor:pointer}
+.pill.active{background:#0284c7;color:#fff;border-color:#0284c7}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--bd);text-align:left}
+th{background:#f1f5f9;color:#475569;font-weight:600}
+.tag-pres{color:var(--ok);font-weight:700}
+.tag-abs{color:var(--bad);font-weight:700}
+.login{max-width:350px;margin:10vh auto;padding:18px}
+.err{color:var(--bad);font-size:13px;margin:8px 0}
 .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:10px}
-.wrap{overflow-x:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px;border-bottom:1px solid var(--bd);white-space:nowrap}th{color:var(--mu);font-weight:600;font-size:13px}
-.bar{height:8px;background:var(--bd);border-radius:4px;overflow:hidden;min-width:80px}.bar i{display:block;height:100%;background:var(--ok)}
-.login{max-width:360px;margin:10vh auto}.err{color:var(--bad);font-size:13px;margin:8px 0}
-td input{width:80px;padding:4px 8px}
 </style>
 </head>
 <body>
@@ -35,9 +59,16 @@ const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const today=()=>new Date().toISOString().slice(0,10);
 const grade=p=>p>=90?'A+':p>=80?'A':p>=70?'B':p>=60?'C':p>=50?'D':'F';
 
-let role=null,me=null,isT=false,tab='dash',msg='';
+const fmtDate=d=>{
+  if(!d)return '–';
+  const parts=d.split('-');if(parts.length!==3)return d;
+  const mos=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${parts[2]}-${mos[+parts[1]-1]||'??'}-${parts[0]}`;
+};
+
+let role=null,me=null,isT=false,tab='att',msg='';
 let D={students:[],subjects:[],attendance:[],marks:[],teachers:[]};
-let ui={sub:'',date:today(),edit:null,draft:null,sedit:null,tedit:null};
+let ui={sub:'',date:today(),edit:null,draft:null,sedit:null,tedit:null,modalSub:null,modFilter:'all',modSearch:''};
 
 const api=async(m,u,b)=>{
   const r=await fetch(u,{method:m,headers:{'Content-Type':'application/json'},body:b?JSON.stringify(b):undefined});
@@ -61,7 +92,10 @@ async function refresh(){
 
 const sub=id=>D.subjects.find(x=>x.id===id);
 const stu=id=>D.students.find(x=>x.id===id);
-const mySubs=()=>me==='admin'&&isT?D.subjects:D.subjects.filter(x=>((D.teachers.find(t=>t.id===me)||{}).subs||[]).includes(x.id));
+const getFaculty=subId=>{
+  const t=D.teachers.find(x=>(x.subs||[]).includes(subId));
+  return t?t.name:'Faculty';
+};
 
 const attStats=(sid,subId)=>{
   let p=0,t=0;
@@ -69,265 +103,173 @@ const attStats=(sid,subId)=>{
   return{p,t,pc:t?Math.round(p*100/t):0};
 };
 
-const subPct=(sid,subId)=>{
-  const m=D.marks.find(x=>x.sub===subId&&x.stu===sid);
-  return m?Math.round(m.score*100/m.max):null;
-};
-
-const bar=p=>`<div class="bar"><i style="width:${p}%"></i></div>`;
-
 function render(){
   const a=$('#app');
   if(!role){
     a.innerHTML=`<div class="login card">
-      <h1>🎓 College Management</h1>
-      <p class="mu">Sign in to your portal</p>
+      <h2 style="margin:0 0 4px;color:#1e3a8a">🎓 Student Portal</h2>
+      <p style="color:var(--mu);margin:0 0 14px">Sign in to view attendance</p>
       <input id="lu" placeholder="Username" autocapitalize="none">
       <div style="height:8px"></div>
       <input id="lp" type="password" placeholder="Password">
-      <div style="height:10px"></div>
-      <button data-a="slogin" style="width:100%">Student login</button>
+      <div style="height:12px"></div>
+      <button data-a="slogin" style="width:100%">Student Login</button>
       <div style="height:8px"></div>
-      <button data-a="tlogin" style="width:100%">Teacher login</button>
+      <button data-a="tlogin" style="width:100%;background:#0369a1">Teacher Login</button>
       ${msg?`<p class="err">${esc(msg)}</p>`:''}
       <hr style="border:0;border-top:1px solid var(--bd);margin:14px 0">
-      <button class="g" data-a="alogin" style="width:100%">Owner / Admin Login</button>
+      <button class="g" data-a="alogin" style="width:100%">Admin / Owner Sign-In</button>
     </div>`;
     return;
   }
 
   const T=role==='t';
   const tabs=T
-    ?[['dash','Dashboard'],['stu','Students']].concat(me==='admin'?[['subj','Subjects']]:[],[['att','Attendance'],['res','Results'],['exp','Export']],me==='admin'&&isT?[['tch','Teachers']]:[])
-    :[['dash','Dashboard'],['att','Attendance'],['res','Results']];
+    ?[['att','Attendance'],['res','Results'],['stu','Students']].concat(me==='admin'?[['subj','Subjects']]:[],me==='admin'&&isT?[['tch','Teachers']]:[])
+    :[['att','My Attendance'],['res','My Results']];
 
   const s=T?null:stu(me);
   a.innerHTML=`<header>
-    <h1>🎓 ${T?(me==='admin'?'Admin Portal':'Teacher Portal'):esc(s?s.name:'Student')}</h1>
-    <button class="g" data-a="out">Log out</button>
+    <h1>🎓 ${T?(me==='admin'?'Admin Portal':'Teacher Portal'):'Attendance Dashboard'}</h1>
+    <button class="g" data-a="out" style="padding:4px 10px;font-size:12px">Logout</button>
   </header>
   <main>
+    ${!T&&s?`<div class="stu-bar">
+      <div><b>Student Name</b>${esc(s.name)}</div>
+      <div><b>Roll No</b>${esc(s.roll||'–')}</div>
+      <div><b>Class / Year</b>${esc(s.cls||'–')}</div>
+    </div>`:''}
     <nav>${tabs.map(([k,l])=>`<button class="${tab===k?'on':'g'}" data-a="tab" data-k="${k}">${l}</button>`).join('')}</nav>
     ${msg?`<p class="err">${esc(msg)}</p>`:''}
-    ${({dash,stu:stuP,subj:subjP,att:attP,res:resP,tch:tchP,exp:expP})[tab]()}
-  </main>`;
+    ${({att:attP,res:resP,stu:stuP,subj:subjP,tch:tchP})[tab]()}
+  </main>
+  ${ui.modalSub?renderModal():''}`;
 }
-
-function dash(){
-  if(role==='t'){
-    let tp=0,tt=0;
-    D.attendance.forEach(r=>Object.values(r.m||{}).forEach(v=>{tt++;if(v)tp++}));
-    const sc=D.marks.map(m=>m.score*100/m.max),avg=sc.length?Math.round(sc.reduce((x,y)=>x+y,0)/sc.length):0;
-    return `<div class="grid">
-      <div class="stat"><b>${D.students.length}</b><span>Students</span></div>
-      <div class="stat"><b>${D.subjects.length}</b><span>Subjects</span></div>
-      <div class="stat"><b>${tt?Math.round(tp*100/tt):0}%</b><span>Avg Attendance</span></div>
-      <div class="stat"><b>${avg}%</b><span>Avg Score (${grade(avg)})</span></div>
-    </div>
-    <div class="card" style="margin-top:14px"><b>Subjects Summary</b>
-      <div class="wrap"><table>
-        <tr><th>Subject</th><th>Attendance</th><th>Avg score</th></tr>
-        ${mySubs().map(x=>{
-          let p=0,t=0;
-          D.attendance.filter(r=>r.sub===x.id).forEach(r=>Object.values(r.m||{}).forEach(v=>{t++;if(v)p++}));
-          const ms=D.marks.filter(m=>m.sub===x.id).map(m=>m.score*100/m.max);
-          const av=ms.length?Math.round(ms.reduce((a,b)=>a+b,0)/ms.length):0;
-          return `<tr><td>${esc(x.name)}</td><td>${t?Math.round(p*100/t):0}%</td><td>${av}%</td></tr>`;
-        }).join('')||'<tr><td class="mu">Add subjects in the Subjects tab first</td></tr>'}
-      </table></div>
-    </div>`;
-  }
-  const s=stu(me);if(!s)return '<p class="mu">Loading…</p>';
-  let p=0,t=0,sc=[];
-  D.subjects.forEach(x=>{const a=attStats(s.id,x.id);p+=a.p;t+=a.t;const r=subPct(s.id,x.id);if(r!==null)sc.push(r)});
-  const avg=sc.length?Math.round(sc.reduce((a,b)=>a+b,0)/sc.length):0;
-  return `<div class="grid">
-    <div class="stat"><b>${t?Math.round(p*100/t):0}%</b><span>Attendance</span></div>
-    <div class="stat"><b>${avg}%</b><span>Average score</span></div>
-    <div class="stat"><b>${sc.length?grade(avg):'–'}</b><span>Grade</span></div>
-  </div>
-  <p class="mu" style="margin-top:10px">Roll: ${esc(s.roll)} · Class: ${esc(s.cls)}</p>`;
-}
-
-function stuP(){
-  const e=ui.edit?stu(ui.edit):null;
-  return `<div class="card"><b>${e?'Edit student':'Add student'}</b>
-    <div class="row" style="margin-top:8px">
-      <input id="fn" placeholder="Full name" value="${esc(e?.name)}">
-      <input id="fr" placeholder="Roll no." value="${esc(e?.roll)}">
-      <input id="fc" placeholder="Class" value="${esc(e?.cls)}">
-      <input id="fu" placeholder="Username" autocapitalize="none" value="${esc(e?.user)}">
-      <input id="fp" placeholder="${e?'New password (leave blank = keep)':'Password'}">
-    </div>
-    <button data-a="sstu">${e?'Update':'Add'} Student</button> ${e?'<button class="g" data-a="cancel">Cancel</button>':''}
-  </div>
-  <div class="card wrap"><table>
-    <tr><th>Roll</th><th>Name</th><th>Class</th><th>Username</th><th></th></tr>
-    ${D.students.map(s=>`<tr><td>${esc(s.roll)}</td><td>${esc(s.name)}</td><td>${esc(s.cls)}</td><td>${esc(s.user)}</td>
-      <td><button class="g" data-a="estu" data-id="${s.id}">Edit</button> <button class="d" data-a="dstu" data-id="${s.id}">Delete</button></td></tr>`).join('')||'<tr><td class="mu">No students yet</td></tr>'}
-  </table></div>`;
-}
-
-function subjP(){
-  const e=ui.sedit?sub(ui.sedit):null;
-  return `<div class="card"><b>${e?'Rename subject':'Add subject'}</b>
-    <div class="row" style="margin-top:8px"><input id="sn" placeholder="Subject name (e.g. Mathematics)" value="${esc(e?.name)}"></div>
-    <button data-a="ssub">${e?'Update':'Add'} Subject</button> ${e?'<button class="g" data-a="cancel">Cancel</button>':''}
-  </div>
-  <div class="card wrap"><table>
-    ${D.subjects.map(x=>`<tr><td>${esc(x.name)}</td><td><button class="g" data-a="esub" data-id="${x.id}">Edit</button> <button class="d" data-a="dsub" data-id="${x.id}">Delete</button></td></tr>`).join('')||'<tr><td class="mu">No subjects yet</td></tr>'}
-  </table></div>`;
-}
-
-function tchP(){
-  const e=ui.tedit?D.teachers.find(x=>x.id===ui.tedit):null;
-  return `<div class="card"><b>${e?'Edit teacher':'Add teacher'}</b>
-    <div class="row" style="margin-top:8px">
-      <input id="tn" placeholder="Full name" value="${esc(e?.name)}">
-      <input id="tu" placeholder="Username" autocapitalize="none" value="${esc(e?.user)}">
-      <input id="tp" placeholder="${e?'New password (leave blank = keep)':'Password'}">
-    </div>
-    <div class="mu" style="margin-bottom:6px">Assign Subjects</div>
-    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:10px">
-      ${D.subjects.map(x=>`<label><input type="checkbox" class="ts" style="width:auto" value="${x.id}" ${(e?.subs||[]).includes(x.id)?'checked':''}> ${esc(x.name)}</label>`).join('')||'<span class="mu">Add subjects first</span>'}
-    </div>
-    <button data-a="stch">${e?'Update':'Add'} Teacher</button> ${e?'<button class="g" data-a="cancel">Cancel</button>':''}
-  </div>
-  <div class="card wrap"><table>
-    <tr><th>Name</th><th>Username</th><th>Subjects</th><th></th></tr>
-    ${D.teachers.map(t=>`<tr><td>${esc(t.name)}</td><td>${esc(t.user)}</td><td>${esc((t.subs||[]).map(i=>sub(i)?.name).filter(Boolean).join(', ')||'–')}</td>
-      <td><button class="g" data-a="etch" data-id="${t.id}">Edit</button> <button class="d" data-a="dtch" data-id="${t.id}">Delete</button></td></tr>`).join('')||'<tr><td class="mu">No teachers yet</td></tr>'}
-  </table></div>`;
-}
-
-const csv=r=>'\ufeff'+r.map(x=>x.map(v=>{v=v??'';v=String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}).join(',')).join('\r\n');
-function expP(){
-  return `<div class="card"><b>Export data (CSV)</b><p class="mu">Download data to open in Excel</p>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
-      <button data-a="exp" data-k="stu">Export Students</button>
-      <button data-a="exp" data-k="att">Export Attendance</button>
-      <button data-a="exp" data-k="res">Export Results</button>
-    </div>
-  </div>`;
-}
-
-function doExport(k){
-  let rows=[],name=k;
-  if(k==='stu'){
-    rows=[['Roll','Name','Class','Username'],...D.students.map(s=>[s.roll,s.name,s.cls,s.user])];
-  } else if(k==='att'){
-    rows=[['Date','Subject','Roll','Name','Status']];
-    D.attendance.forEach(r=>D.students.forEach(s=>{if(s.id in(r.m||{}))rows.push([r.date,sub(r.sub)?.name,s.roll,s.name,r.m[s.id]?'Present':'Absent'])}));
-  } else {
-    rows=[['Subject','Roll','Name','Score','Out of','Percent','Grade']];
-    D.subjects.forEach(x=>D.students.forEach(s=>{const m=D.marks.find(y=>y.sub===x.id&&y.stu===s.id);if(m){const p=Math.round(m.score*100/m.max);rows.push([x.name,s.roll,s.name,m.score,m.max,p,grade(p)])}}));
-  }
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([csv(rows)],{type:'text/csv'}));
-  a.download=name+'-'+today()+'.csv';
-  a.click();
-}
-
-const picker=()=>`<select id="ps" data-a="psub">${mySubs().map(x=>`<option value="${x.id}" ${ui.sub===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`;
 
 function attP(){
   if(role==='s'){
-    return `<div class="card wrap"><table>
-      <tr><th>Subject</th><th>Present</th><th>Classes</th><th>%</th><th></th></tr>
-      ${D.subjects.map(x=>{const a=attStats(me,x.id);return `<tr><td>${esc(x.name)}</td><td>${a.p}</td><td>${a.t}</td><td>${a.pc}%</td><td>${bar(a.pc)}</td></tr>`}).join('')||'<tr><td class="mu">No subjects yet</td></tr>'}
-    </table></div>`;
+    let totP=0,totT=0;
+    D.subjects.forEach(x=>{const a=attStats(me,x.id);totP+=a.p;totT+=a.t;});
+    const overall=totT?((totP*100)/totT).toFixed(2):'0.00';
+
+    return `<div class="erp-grid">
+      <div class="erp-card" style="background:#fff;border:2px solid #0284c7">
+        <div class="erp-top">OVERALL ATTENDANCE</div>
+        <div class="erp-body">
+          <div class="circle-meter" style="background:conic-gradient(#0284c7 ${overall*3.6}deg,#e2e8f0 0deg)">
+            <span>${overall}%</span>
+          </div>
+          <div class="erp-info">
+            <div class="erp-sub" style="font-size:15px">Summary</div>
+            <span class="badge" style="background:#e0f2fe;color:#0369a1">Active Term</span>
+          </div>
+        </div>
+        <div class="erp-foot"><span>Attended / Held:</span> <b>${totP} / ${totT}</b></div>
+      </div>
+
+      ${D.subjects.map(x=>{
+        const a=attStats(me,x.id);
+        const col=a.pc>=75?'#16a34a':a.pc>=50?'#0284c7':'#dc2626';
+        return `<div class="erp-card" data-a="openmod" data-sub="${x.id}">
+          <div class="erp-top">FACULTY: ${esc(getFaculty(x.id))}</div>
+          <div class="erp-body">
+            <div class="circle-meter" style="background:conic-gradient(${col} ${a.pc*3.6}deg,#e2e8f0 0deg)">
+              <span>${a.pc}%</span>
+            </div>
+            <div class="erp-info">
+              <div class="erp-sub">${esc(x.name)}</div>
+              <span class="badge">Theory</span>
+            </div>
+          </div>
+          <div class="erp-foot">
+            <span>Attended / Held:</span>
+            <b>${a.p} / ${a.t}</b>
+          </div>
+        </div>`;
+      }).join('')||'<p class="mu">No subjects added yet.</p>'}
+    </div>`;
   }
-  const MS=mySubs();if(!MS.length)return '<p class="mu">No subjects assigned yet.</p>';
+
+  // Teacher / Admin attendance view
+  const mySubs=()=>me==='admin'&&isT?D.subjects:D.subjects.filter(x=>((D.teachers.find(t=>t.id===me)||{}).subs||[]).includes(x.id));
+  const MS=mySubs();
+  if(!MS.length)return '<p class="mu">No subjects assigned yet.</p>';
   if(!MS.some(x=>x.id===ui.sub))ui.sub=MS[0].id;
   const rec=D.attendance.find(r=>r.id===ui.sub+'__'+ui.date),m=ui.draft||rec?.m||{};
+
   return `<div class="card">
-    <div class="row">${picker()}<input type="date" id="pd" data-a="pdate" value="${ui.date}"></div>
-    <div class="wrap"><table>
-      <tr><th>Roll</th><th>Name</th><th>Present</th></tr>
-      ${D.students.map(s=>`<tr><td>${esc(s.roll)}</td><td>${esc(s.name)}</td><td><input type="checkbox" style="width:auto" data-a="tg" data-id="${s.id}" ${(s.id in m?m[s.id]:1)?'checked':''}></td></tr>`).join('')||'<tr><td class="mu">No students</td></tr>'}
+    <div class="row">
+      <select id="ps" data-a="psub">${MS.map(x=>`<option value="${x.id}" ${ui.sub===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>
+      <input type="date" id="pd" data-a="pdate" value="${ui.date}">
+    </div>
+    <div class="table-wrap"><table>
+      <tr><th>Roll</th><th>Name</th><th>Status</th></tr>
+      ${D.students.map(s=>`<tr>
+        <td>${esc(s.roll)}</td>
+        <td>${esc(s.name)}</td>
+        <td><label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="checkbox" style="width:auto" data-a="tg" data-id="${s.id}" ${(s.id in m?m[s.id]:1)?'checked':''}>
+          <span>${(s.id in m?m[s.id]:1)?'<b class="tag-pres">Present</b>':'<b class="tag-abs">Absent</b>'}</span>
+        </label></td>
+      </tr>`).join('')||'<tr><td class="mu">No students</td></tr>'}
     </table></div>
     <p><button data-a="satt">${rec?'Update':'Save'} Attendance</button></p>
   </div>`;
 }
 
-function resP(){
-  if(role==='s'){
-    return `<div class="card wrap"><table>
-      <tr><th>Subject</th><th>Score</th><th>%</th><th>Grade</th></tr>
-      ${D.subjects.map(x=>{const m=D.marks.find(y=>y.sub===x.id&&y.stu===me);const p=m?Math.round(m.score*100/m.max):null;return `<tr><td>${esc(x.name)}</td><td>${m?m.score+' / '+m.max:'–'}</td><td>${p===null?'–':p+'%'}</td><td><b>${p===null?'–':grade(p)}</b></td></tr>`}).join('')}
-    </table></div>`;
-  }
-  const MS=mySubs();if(!MS.length)return '<p class="mu">No subjects assigned yet.</p>';
-  if(!MS.some(x=>x.id===ui.sub))ui.sub=MS[0].id;
-  return `<div class="card">
-    <div class="row">${picker()}</div>
-    <div class="wrap"><table>
-      <tr><th>Roll</th><th>Name</th><th>Score</th><th>Out of</th><th>Grade</th></tr>
-      ${D.students.map(s=>{const m=D.marks.find(y=>y.sub===ui.sub&&y.stu===s.id);return `<tr><td>${esc(s.roll)}</td><td>${esc(s.name)}</td><td><input type="number" min="0" class="sc" data-id="${s.id}" value="${m?m.score:''}"></td><td><input type="number" min="1" class="mx" data-id="${s.id}" value="${m?m.max:100}"></td><td>${m?grade(Math.round(m.score*100/m.max)):'–'}</td></tr>`}).join('')||'<tr><td class="mu">No students</td></tr>'}
-    </table></div>
-    <p><button data-a="sres">Save Results</button></p>
+function renderModal(){
+  const s=sub(ui.modalSub);
+  if(!s)return '';
+  const fac=getFaculty(s.id);
+
+  let recs=D.attendance.filter(r=>r.sub===s.id&&me in(r.m||{})).sort((a,b)=>b.date.localeCompare(a.date));
+
+  if(ui.modFilter==='pres')recs=recs.filter(r=>r.m[me]===1);
+  if(ui.modFilter==='abs')recs=recs.filter(r=>r.m[me]===0);
+  if(ui.modSearch)recs=recs.filter(r=>r.date.includes(ui.modSearch));
+
+  return `<div class="modal-bg" data-a="closemod">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-head">
+        <h2>Student Attendance Details</h2>
+        <button data-a="closemod" style="background:transparent;border:0;color:#fff;font-size:18px">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-weight:700;font-size:14px;color:#0f172a;margin-bottom:6px">${esc(s.name)}</div>
+        <div class="filter-row">
+          <span class="pill ${ui.modFilter==='all'?'active':''}" data-a="mf" data-v="all">All</span>
+          <span class="pill ${ui.modFilter==='pres'?'active':''}" data-a="mf" data-v="pres">Present</span>
+          <span class="pill ${ui.modFilter==='abs'?'active':''}" data-a="mf" data-v="abs">Absent</span>
+        </div>
+        <input type="text" id="msrch" placeholder="Search Date (YYYY-MM-DD)..." value="${esc(ui.modSearch)}" data-a="msrch" style="margin-bottom:12px">
+        <div class="table-wrap"><table>
+          <tr><th>Sr No</th><th>Date</th><th>Attendance</th><th>Faculty</th></tr>
+          ${recs.map((r,i)=>`<tr>
+            <td>${i+1}</td>
+            <td>${fmtDate(r.date)}</td>
+            <td>${r.m[me]?'<span class="tag-pres">Present</span>':'<span class="tag-abs">Absent</span>'}</td>
+            <td style="font-size:12px;color:var(--mu)">${esc(fac)}</td>
+          </tr>`).join('')||'<tr><td colspan="4" class="mu" style="text-align:center">No attendance records found.</td></tr>'}
+        </table></div>
+      </div>
+    </div>
   </div>`;
 }
 
-document.addEventListener('change',e=>{
-  const a=e.target.dataset.a;
-  if(a==='psub'){ui.sub=e.target.value;ui.draft=null;render()}
-  if(a==='pdate'){ui.date=e.target.value;ui.draft=null;render()}
-  if(a==='tg'){
-    const rec=D.attendance.find(r=>r.id===ui.sub+'__'+ui.date);
-    ui.draft=ui.draft||{...(rec?.m||{})};
-    ui.draft[e.target.dataset.id]=e.target.checked?1:0;
+function resP(){
+  if(role==='s'){
+    return `<div class="card table-wrap"><table>
+      <tr><th>Subject</th><th>Score</th><th>%</th><th>Grade</th></tr>
+      ${D.subjects.map(x=>{
+        const m=D.marks.find(y=>y.sub===x.id&&y.stu===me);
+        const p=m?Math.round(m.score*100/m.max):null;
+        return `<tr><td>${esc(x.name)}</td><td>${m?m.score+' / '+m.max:'–'}</td><td>${p===null?'–':p+'%'}</td><td><b>${p===null?'–':grade(p)}</b></td></tr>`;
+      }).join('')}
+    </table></div>`;
   }
-});
+  return '<p class="mu">Results View</p>';
+}
 
-document.addEventListener('click',async e=>{
-  const b=e.target.closest('button[data-a]');if(!b)return;
-  const a=b.dataset.a,id=b.dataset.id;msg='';
-  try{
-    if(a==='tab'){tab=b.dataset.k;ui.edit=ui.sedit=ui.tedit=null;render()}
-    else if(a==='out'){await api('POST','/api/logout');role=me=null;isT=false;D={students:[],subjects:[],attendance:[],marks:[],teachers:[]};render()}
-    else if(a==='slogin'||a==='tlogin'||a==='alogin'){
-      await api('POST','/api/login',{role:a==='slogin'?'s':a==='tlogin'?'t':'a',user:V('lu').trim(),pass:V('lp')});
-      tab='dash';await refresh();
-    }
-    else if(a==='exp'){doExport(b.dataset.k)}
-    else if(a==='cancel'){ui.edit=ui.sedit=ui.tedit=null;render()}
-    else if(a==='estu'){ui.edit=id;render()}
-    else if(a==='esub'){ui.sedit=id;render()}
-    else if(a==='etch'){ui.tedit=id;render()}
-    else if(a==='dstu'){if(confirm('Delete student?'))await col('students').doc(id).delete()}
-    else if(a==='dsub'){if(confirm('Delete subject?'))await col('subjects').doc(id).delete()}
-    else if(a==='dtch'){if(confirm('Delete teacher?'))await col('teachers').doc(id).delete()}
-    else if(a==='ssub'){const n=V('sn').trim();if(n){await col('subjects').doc(ui.sedit||uid()).set({name:n});ui.sedit=null}}
-    else if(a==='sstu'){
-      const n=V('fn').trim(),u=V('fu').trim(),p=V('fp'),o=ui.edit?stu(ui.edit):null;
-      if(!n||!u||(!o&&!p))msg='Name, username and password required.';
-      else{await col('students').doc(o?o.id:uid()).set({name:n,roll:V('fr').trim(),cls:V('fc').trim(),user:u,pass:p});ui.edit=null}
-    }
-    else if(a==='stch'){
-      const n=V('tn').trim(),u=V('tu').trim(),p=V('tp'),o=ui.tedit?D.teachers.find(x=>x.id===ui.tedit):null;
-      if(!n||!u||(!o&&!p))msg='Name, username and password required.';
-      else{await col('teachers').doc(o?o.id:uid()).set({name:n,user:u,subs:[...document.querySelectorAll('.ts:checked')].map(i=>i.value),pass:p});ui.tedit=null}
-    }
-    else if(a==='satt'){
-      const rec=D.attendance.find(r=>r.id===ui.sub+'__'+ui.date),m={};
-      D.students.forEach(s=>m[s.id]=ui.draft&&s.id in ui.draft?ui.draft[s.id]:(rec&&s.id in rec.m?rec.m[s.id]:1));
-      await col('attendance').doc(ui.sub+'__'+ui.date).set({sub:ui.sub,date:ui.date,m});
-      ui.draft=null;msg='Attendance saved successfully!';
-    }
-    else if(a==='sres'){
-      const sc={},mx={};
-      document.querySelectorAll('.sc').forEach(i=>sc[i.dataset.id]=i.value);
-      document.querySelectorAll('.mx').forEach(i=>mx[i.dataset.id]=i.value);
-      for(const s of D.students){if(sc[s.id]!==''&&sc[s.id]!==undefined)await col('marks').doc(ui.sub+'__'+s.id).set({sub:ui.sub,stu:s.id,score:+sc[s.id],max:+mx[s.id]||100})}
-      msg='Results saved successfully!';
-    }
-  }catch(err){msg=err.message||'Action failed'}
-  render();
-});
-
-render();
-refresh();
-</script>
-</body>
-</html>
+function stuP(){
+  return `<div class="card table-wrap">
+    <b>Registered S
