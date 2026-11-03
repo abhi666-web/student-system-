@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,17 +7,20 @@
 <title>Student Attendance Portal</title>
 <style>
 :root{--bg:#f0f2f5;--card:#ffffff;--tx:#1e293b;--mu:#64748b;--ac:#0284c7;--bd:#e2e8f0;--ok:#16a34a;--bad:#dc2626}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.5 system-ui,-apple-system,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.5 system-ui,-apple-system,sans-serif}
 header{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:#1e3a8a;color:#fff;position:sticky;top:0;z-index:10}
 header h1{font-size:16px;margin:0;font-weight:600}
 main{max-width:960px;margin:0 auto;padding:12px}
 nav{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px}
 button,select,input{font:inherit}
-button{background:var(--ac);color:#fff;border:0;border-radius:6px;padding:7px 12px;cursor:pointer;font-weight:500}
-button.g{background:#fff;color:var(--tx);border:1px solid var(--bd)}button.on{background:var(--ac);color:#fff}button.d{background:var(--bad);color:#fff}
-input,select{background:#fff;border:1px solid var(--bd);border-radius:6px;padding:7px 10px;width:100%}
+button{background:var(--ac);color:#fff;border:0;border-radius:6px;padding:8px 14px;cursor:pointer;font-weight:600}
+button.g{background:#fff;color:var(--tx);border:1px solid var(--bd)}
+button.on{background:var(--ac);color:#fff}
+button.d{background:var(--bad);color:#fff}
+input,select{background:#fff;border:1px solid var(--bd);border-radius:6px;padding:8px 10px;width:100%}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
-.stu-bar{background:#fff;border:1px solid var(--bd);border-radius:8px;padding:12px;margin-bottom:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;font-size:12px}
+.stu-bar{background:#fff;border:1px solid var(--bd);border-radius:8px;padding:12px;margin-bottom:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;font-size:12px}
 .stu-bar b{color:#1e3a8a;display:block;font-size:13px}
 .erp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
 .erp-card{background:#f8fafc;border:1px solid #cbd5e1;border-radius:10px;padding:12px;cursor:pointer;transition:transform 0.1s}
@@ -50,9 +54,13 @@ th{background:#f1f5f9;color:#475569;font-weight:600}
 </style>
 </head>
 <body>
-<div id="app"></div>
+<div id="app"><div style="padding:40px;text-align:center;color:#64748b">Loading Student Portal...</div></div>
 
 <script>
+window.onerror=function(msg,src,line){
+  document.getElementById('app').innerHTML='<div style="padding:20px;color:red;background:#fff;border:1px solid red;margin:20px;border-radius:8px"><b>Error:</b> '+msg+' (Line: '+line+')</div>';
+};
+
 const $=s=>document.querySelector(s),V=id=>($('#'+id)||{}).value||'';
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -61,7 +69,8 @@ const grade=p=>p>=90?'A+':p>=80?'A':p>=70?'B':p>=60?'C':p>=50?'D':'F';
 
 const fmtDate=d=>{
   if(!d)return '–';
-  const parts=d.split('-');if(parts.length!==3)return d;
+  const parts=d.split('-');
+  if(parts.length!==3)return d;
   const mos=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   return `${parts[2]}-${mos[+parts[1]-1]||'??'}-${parts[0]}`;
 };
@@ -85,7 +94,8 @@ const col=n=>({doc:id=>({
 async function refresh(){
   try{
     const j=await api('GET','/api/data');
-    D=j.data||D;role=j.role;me=j.me||null;isT=!!j.admin;
+    if(j.data)D=j.data;
+    role=j.role;me=j.me||null;isT=!!j.admin;
   }catch(e){}
   render();
 }
@@ -99,7 +109,12 @@ const getFaculty=subId=>{
 
 const attStats=(sid,subId)=>{
   let p=0,t=0;
-  D.attendance.forEach(r=>{if(r.sub===subId&&sid in(r.m||{})){t++;if(r.m[sid])p++}});
+  D.attendance.forEach(r=>{
+    if(r.sub===subId&&sid in(r.m||{})){
+      t++;
+      if(r.m[sid])p++;
+    }
+  });
   return{p,t,pc:t?Math.round(p*100/t):0};
 };
 
@@ -141,7 +156,7 @@ function render(){
     </div>`:''}
     <nav>${tabs.map(([k,l])=>`<button class="${tab===k?'on':'g'}" data-a="tab" data-k="${k}">${l}</button>`).join('')}</nav>
     ${msg?`<p class="err">${esc(msg)}</p>`:''}
-    ${({att:attP,res:resP,stu:stuP,subj:subjP,tch:tchP})[tab]()}
+    ${({att:attP,res:resP,stu:stuP,subj:subjP,tch:tchP})[tab]?({att:attP,res:resP,stu:stuP,subj:subjP,tch:tchP})[tab]():attP()}
   </main>
   ${ui.modalSub?renderModal():''}`;
 }
@@ -190,7 +205,6 @@ function attP(){
     </div>`;
   }
 
-  // Teacher / Admin attendance view
   const mySubs=()=>me==='admin'&&isT?D.subjects:D.subjects.filter(x=>((D.teachers.find(t=>t.id===me)||{}).subs||[]).includes(x.id));
   const MS=mySubs();
   if(!MS.length)return '<p class="mu">No subjects assigned yet.</p>';
@@ -264,7 +278,7 @@ function resP(){
         const m=D.marks.find(y=>y.sub===x.id&&y.stu===me);
         const p=m?Math.round(m.score*100/m.max):null;
         return `<tr><td>${esc(x.name)}</td><td>${m?m.score+' / '+m.max:'–'}</td><td>${p===null?'–':p+'%'}</td><td><b>${p===null?'–':grade(p)}</b></td></tr>`;
-      }).join('')}
+      }).join('')||'<tr><td class="mu">No marks published yet</td></tr>'}
     </table></div>`;
   }
   return '<p class="mu">Results View</p>';
@@ -272,4 +286,86 @@ function resP(){
 
 function stuP(){
   return `<div class="card table-wrap">
-    <b>Registered S
+    <b>Registered Students</b>
+    <table style="margin-top:10px">
+      <tr><th>Roll</th><th>Name</th><th>Username</th></tr>
+      ${D.students.map(s=>`<tr><td>${esc(s.roll)}</td><td>${esc(s.name)}</td><td>${esc(s.user)}</td></tr>`).join('')||'<tr><td class="mu">No students</td></tr>'}
+    </table>
+  </div>`;
+}
+
+function subjP(){
+  return `<div class="card">
+    <b>Add New Subject</b>
+    <div class="row" style="margin-top:8px"><input id="sn" placeholder="Subject Name (e.g. Data Structures)"></div>
+    <button data-a="ssub">Add Subject</button>
+    <div class="table-wrap" style="margin-top:12px"><table>
+      ${D.subjects.map(x=>`<tr><td>${esc(x.name)}</td><td><button class="d" data-a="dsub" data-id="${x.id}">Delete</button></td></tr>`).join('')}
+    </table></div>
+  </div>`;
+}
+
+function tchP(){
+  return `<div class="card">
+    <b>Add Teacher</b>
+    <div class="row" style="margin-top:8px">
+      <input id="tn" placeholder="Faculty Name">
+      <input id="tu" placeholder="Username">
+      <input id="tp" placeholder="Password">
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px">
+      ${D.subjects.map(x=>`<label><input type="checkbox" class="ts" style="width:auto" value="${x.id}"> ${esc(x.name)}</label>`).join('')}
+    </div>
+    <button data-a="stch">Save Faculty</button>
+  </div>`;
+}
+
+document.addEventListener('input',e=>{
+  if(e.target.dataset.a==='msrch'){ui.modSearch=e.target.value.trim();render();}
+});
+
+document.addEventListener('change',e=>{
+  const a=e.target.dataset.a;
+  if(a==='psub'){ui.sub=e.target.value;ui.draft=null;render()}
+  if(a==='pdate'){ui.date=e.target.value;ui.draft=null;render()}
+  if(a==='tg'){
+    const rec=D.attendance.find(r=>r.id===ui.sub+'__'+ui.date);
+    ui.draft=ui.draft||{...(rec?.m||{})};
+    ui.draft[e.target.dataset.id]=e.target.checked?1:0;
+    render();
+  }
+});
+
+document.addEventListener('click',async e=>{
+  const b=e.target.closest('[data-a]');if(!b)return;
+  const a=b.dataset.a,id=b.dataset.id;msg='';
+  try{
+    if(a==='openmod'){ui.modalSub=b.dataset.sub;ui.modFilter='all';ui.modSearch='';render()}
+    else if(a==='closemod'){ui.modalSub=null;render()}
+    else if(a==='mf'){ui.modFilter=b.dataset.v;render()}
+    else if(a==='tab'){tab=b.dataset.k;render()}
+    else if(a==='out'){await api('POST','/api/logout');role=me=null;refresh()}
+    else if(a==='slogin'||a==='tlogin'||a==='alogin'){
+      await api('POST','/api/login',{role:a==='slogin'?'s':a==='tlogin'?'t':'a',user:V('lu').trim(),pass:V('lp')});
+      tab='att';await refresh();
+    }
+    else if(a==='ssub'){const n=V('sn').trim();if(n)await col('subjects').doc(uid()).set({name:n})}
+    else if(a==='dsub'){if(confirm('Delete subject?'))await col('subjects').doc(id).delete()}
+    else if(a==='stch'){
+      await col('teachers').doc(uid()).set({name:V('tn').trim(),user:V('tu').trim(),subs:[...document.querySelectorAll('.ts:checked')].map(i=>i.value),pass:V('tp')});
+    }
+    else if(a==='satt'){
+      const rec=D.attendance.find(r=>r.id===ui.sub+'__'+ui.date),m={};
+      D.students.forEach(s=>m[s.id]=ui.draft&&s.id in ui.draft?ui.draft[s.id]:(rec&&s.id in rec.m?rec.m[s.id]:1));
+      await col('attendance').doc(ui.sub+'__'+ui.date).set({sub:ui.sub,date:ui.date,m});
+      ui.draft=null;msg='Attendance saved!';
+    }
+  }catch(err){msg=err.message||'Action failed'}
+  render();
+});
+
+render();
+refresh();
+</script>
+</body>
+</html>
