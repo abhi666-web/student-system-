@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -20,6 +21,16 @@ input,select{background:var(--bg);border:1px solid var(--bd);border-radius:8px;p
 .wrap{overflow-x:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px;border-bottom:1px solid var(--bd);white-space:nowrap}th{color:var(--mu);font-weight:600;font-size:12px}
 .bar{height:8px;background:var(--bd);border-radius:4px;overflow:hidden;min-width:70px}.bar i{display:block;height:100%;background:var(--ok)}
 .login{max-width:340px;margin:10vh auto}.err{color:var(--bad);font-size:13px;margin:6px 0}td input{width:75px;padding:4px 6px}
+
+/* Toggle Switch Styling */
+.sw{display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.sw input{display:none}
+.sl{width:50px;height:26px;background:var(--bad);border-radius:26px;position:relative;transition:0.25s}
+.sl:before{content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:0.25s;box-shadow:0 1px 3px rgba(0,0,0,0.3)}
+.sw input:checked + .sl{background:var(--ok)}
+.sw input:checked + .sl:before{transform:translateX(24px)}
+
+/* Date Modal */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:99;padding:12px}
 .modal{background:var(--card);border:1px solid var(--bd);border-radius:12px;width:100%;max-width:500px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden}
 .modal-h{background:var(--ac);color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
@@ -113,8 +124,19 @@ function attP(){
   if(!MS.some(x=>x.id===ui.sub))ui.sub=MS[0].id;
   const rec=D.attendance.find(r=>r.id===ui.sub+'__'+ui.date),m=ui.draft||rec?.m||{};
   return `<div class="card"><div class="row">${picker()}<input type="date" id="pd" data-a="pdate" value="${ui.date}"></div>
-  <div class="wrap"><table><tr><th>Roll</th><th>Name</th><th>Present</th></tr>${D.students.map(s=>`<tr><td>${esc(s.roll)}</td><td>${esc(s.name)}</td><td><input type="checkbox" style="width:auto" data-a="tg" data-id="${s.id}" ${(s.id in m?m[s.id]:1)?'checked':''}></td></tr>`).join('')||'<tr><td class="mu">No students</td></tr>'}</table></div>
-  <p><button data-a="satt">${rec?'Update':'Save'} Attendance</button></p></div>`;
+  <div class="wrap"><table><tr><th>Roll</th><th>Name</th><th>Status (Toggle Present / Absent)</th></tr>
+  ${D.students.map(s=>{
+    const isP = s.id in m ? !!m[s.id] : true;
+    return `<tr><td>${esc(s.roll)}</td><td>${esc(s.name)}</td>
+    <td>
+      <label class="sw">
+        <input type="checkbox" data-a="tg" data-id="${s.id}" ${isP?'checked':''}>
+        <span class="sl"></span>
+        <b style="color:${isP?'var(--ok)':'var(--bad)'}">${isP?'Present':'Absent'}</b>
+      </label>
+    </td></tr>`;
+  }).join('')||'<tr><td colspan="3" class="mu">No students</td></tr>'}</table></div>
+  <p style="margin-top:14px"><button data-a="satt">${rec?'Update':'Save'} Attendance</button></p></div>`;
 }
 
 function showDatesModal(){
@@ -140,7 +162,12 @@ document.addEventListener('change',e=>{
   const a=e.target.dataset.a;
   if(a==='psub'){ui.sub=e.target.value;ui.draft=null;render()}
   if(a==='pdate'){ui.date=e.target.value;ui.draft=null;render()}
-  if(a==='tg'){const rec=D.attendance.find(r=>r.id===ui.sub+'__'+ui.date);ui.draft=ui.draft||{...(rec?.m||{})};ui.draft[e.target.dataset.id]=e.target.checked?1:0}
+  if(a==='tg'){
+    const rec=D.attendance.find(r=>r.id===ui.sub+'__'+ui.date);
+    ui.draft=ui.draft||{...(rec?.m||{})};
+    ui.draft[e.target.dataset.id]=e.target.checked?1:0;
+    render();
+  }
 });
 
 document.addEventListener('click',async e=>{
