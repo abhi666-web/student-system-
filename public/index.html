@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -22,13 +21,12 @@ input,select{background:var(--bg);border:1px solid var(--bd);border-radius:8px;p
 .bar{height:8px;background:var(--bd);border-radius:4px;overflow:hidden;min-width:70px}.bar i{display:block;height:100%;background:var(--ok)}
 .login{max-width:340px;margin:10vh auto}.err{color:var(--bad);font-size:13px;margin:6px 0}td input{width:75px;padding:4px 6px}
 
-/* Toggle Switch Styling */
-.sw{display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
-.sw input{display:none}
-.sl{width:50px;height:26px;background:var(--bad);border-radius:26px;position:relative;transition:0.25s}
-.sl:before{content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:0.25s;box-shadow:0 1px 3px rgba(0,0,0,0.3)}
-.sw input:checked + .sl{background:var(--ok)}
-.sw input:checked + .sl:before{transform:translateX(24px)}
+/* Interactive Switch */
+.sw-btn{display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;padding:4px 0}
+.sl{width:48px;height:26px;background:var(--bad);border-radius:26px;position:relative;transition:0.2s}
+.sl:before{content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.3)}
+.sl.on{background:var(--ok)}
+.sl.on:before{transform:translateX(22px)}
 
 /* Date Modal */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:99;padding:12px}
@@ -59,7 +57,7 @@ const attStats=(sid,subId)=>{let p=0,t=0;D.attendance.forEach(r=>{if(r.sub===sub
 const subPct=(sid,subId)=>{const m=D.marks.find(x=>x.sub===subId&&x.stu===sid);return m?Math.round(m.score*100/m.max):null};
 const bar=p=>`<div class="bar"><i style="width:${p}%"></i></div>`;
 const mySubs=()=>me==='admin'&&isT?D.subjects:D.subjects.filter(x=>((D.teachers.find(t=>t.id===me)||{}).subs||[]).includes(x.id));
-const picker=()=>`<select id="ps" data-a="psub">${mySubs().map(x=>`<option value="${x.id}" ${ui.sub===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`;
+const picker=()=>`<select id="ps">${mySubs().map(x=>`<option value="${x.id}" ${ui.sub===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`;
 
 function render(){
   const a=$('#app');
@@ -123,17 +121,16 @@ function attP(){
   const MS=mySubs();if(!MS.length)return '<p class="mu">No subjects assigned to you yet.</p>';
   if(!MS.some(x=>x.id===ui.sub))ui.sub=MS[0].id;
   const rec=D.attendance.find(r=>r.id===ui.sub+'__'+ui.date),m=ui.draft||rec?.m||{};
-  return `<div class="card"><div class="row">${picker()}<input type="date" id="pd" data-a="pdate" value="${ui.date}"></div>
-  <div class="wrap"><table><tr><th>Roll</th><th>Name</th><th>Status (Toggle Present / Absent)</th></tr>
+  return `<div class="card"><div class="row">${picker()}<input type="date" id="pd" value="${ui.date}"></div>
+  <div class="wrap"><table><tr><th>Roll</th><th>Name</th><th>Tap to Toggle (Present / Absent)</th></tr>
   ${D.students.map(s=>{
     const isP = s.id in m ? !!m[s.id] : true;
     return `<tr><td>${esc(s.roll)}</td><td>${esc(s.name)}</td>
     <td>
-      <label class="sw">
-        <input type="checkbox" data-a="tg" data-id="${s.id}" ${isP?'checked':''}>
-        <span class="sl"></span>
+      <div class="sw-btn" data-a="tg" data-id="${s.id}">
+        <span class="sl ${isP?'on':''}"></span>
         <b style="color:${isP?'var(--ok)':'var(--bad)'}">${isP?'Present':'Absent'}</b>
-      </label>
+      </div>
     </td></tr>`;
   }).join('')||'<tr><td colspan="3" class="mu">No students</td></tr>'}</table></div>
   <p style="margin-top:14px"><button data-a="satt">${rec?'Update':'Save'} Attendance</button></p></div>`;
@@ -159,21 +156,23 @@ function resP(){
 }
 
 document.addEventListener('change',e=>{
-  const a=e.target.dataset.a;
-  if(a==='psub'){ui.sub=e.target.value;ui.draft=null;render()}
-  if(a==='pdate'){ui.date=e.target.value;ui.draft=null;render()}
-  if(a==='tg'){
-    const rec=D.attendance.find(r=>r.id===ui.sub+'__'+ui.date);
-    ui.draft=ui.draft||{...(rec?.m||{})};
-    ui.draft[e.target.dataset.id]=e.target.checked?1:0;
-    render();
-  }
+  if(e.target.id==='pd'){ui.date=e.target.value;ui.draft=null;render()}
+  if(e.target.id==='ps'){ui.sub=e.target.value;ui.draft=null;render()}
 });
 
 document.addEventListener('click',async e=>{
+  if(e.target.closest('input, select')) return;
   const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,id=b.dataset.id;msg='';
   try{
-    if(a==='openm'){modalSub=b.dataset.sub;render()}
+    if(a==='tg'){
+      const rec=D.attendance.find(r=>r.id===ui.sub+'__'+ui.date);
+      ui.draft=ui.draft||{...(rec?.m||{})};
+      const cur = (id in ui.draft) ? ui.draft[id] : (rec && id in (rec.m||{}) ? rec.m[id] : 1);
+      ui.draft[id] = cur ? 0 : 1;
+      render();
+      return;
+    }
+    else if(a==='openm'){modalSub=b.dataset.sub;render()}
     else if(a==='closem'){modalSub=null;render()}
     else if(a==='tab'){tab=b.dataset.k;ui.edit=ui.sedit=ui.tedit=null;render()}
     else if(a==='out'){await api('POST','/api/logout');role=me=null;refresh()}
